@@ -58,11 +58,11 @@
                "admin_password":{  
                   "value":"[parameters('admin_password')]"
                }
-            },
-            "dependsOn":[  
+            }
+         },
+         "dependsOn":[  
                "linkedTemplateNetworks"
             ]
-         }
       }
    ]
 }
