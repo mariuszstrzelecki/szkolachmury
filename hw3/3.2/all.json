@@ -11,7 +11,7 @@
          "type":"String"
       },
       "admin_password":{  
-         "type":"String",
+         "type":"securestring",
          "metadata":{  
             "description":"Password for OS admin user"
          }
