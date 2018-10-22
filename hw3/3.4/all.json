@@ -12,7 +12,7 @@
       },
       "vaultName": {
             "type": "string",
-            "defaultValue": "concat(parameters('env_id'),'Vault')",
+            "defaultValue": "concat(parameters('env_id'),'SharedKeyV001')",
             "metadata": {
                 "description": "The name of the keyvault that contains the secret."
             }
