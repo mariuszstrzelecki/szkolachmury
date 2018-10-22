@@ -9,13 +9,7 @@
 		"vnet_prefix": {
             "defaultValue": "10.1",
             "type": "String"
-        },
-		"admin_password": {
-        "type": "securestring",
-        "metadata": {
-            "description": "Password for OS admin user"
-			}
-		}
+        }
     },
     "variables": {},
     "resources": [
