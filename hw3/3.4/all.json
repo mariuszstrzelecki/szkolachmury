@@ -71,7 +71,12 @@
                   "value":"[parameters('env_id')]"
                },
                "admin_password":{  
-                  "value":"[parameters('admin_password')]"
+                  "reference": {
+                        "keyVault": {
+                                "id": "[resourceId(subscription().subscriptionId, parameters('vaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('vaultName'))]"
+                            },
+                            "secretName": "[parameters('vaultSecretName')]"
+                        }
                }
             }
          },
