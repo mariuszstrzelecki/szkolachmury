@@ -30,7 +30,7 @@ CldSApp2Nsg001
 
 
 3.2 
-ARM Template znajduje się pod adresem: 
+ARM Template znajduje się pod adresem: https://github.com/mariuszstrzelecki/szkolachmury/tree/master/hw3/3.2
 
 Przykładowy deployment można wykonać następująco:
 - Zamienić wartości zmiennych w poniższym skrypcie na odpowiednie dla swojej subskrypcji i potrzeb.
@@ -51,7 +51,7 @@ az group deployment create --name "${ENV_ID}`date +%Y%m%d%H%M`" --resource-group
 
 
 3.3 
-Przykładowa definicja roli znajduje się pod adresem: 
+Przykładowa definicja roli znajduje się pod adresem: https://github.com/mariuszstrzelecki/szkolachmury/blob/master/hw3/3.3/doctor_restart_rbac.json
 
 Przykładowy deployment można wykonać następująco:
 - Pobrać plik JSON i podmienić id subskrypcji na włąsny (w repo ciąg: 00000000-0000-0000-0000-000000000000)
