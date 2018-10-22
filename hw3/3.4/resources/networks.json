@@ -1,0 +1,103 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "env_id": {
+            "defaultValue": "CldS",
+            "type": "String"
+        },
+		"vnet_prefix": {
+            "defaultValue": "10.1",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat(parameters('env_id'),'App1Nsg001')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "securityRules": []
+            },
+            "dependsOn": []
+        },
+		{
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat(parameters('env_id'),'App2Nsg001')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "securityRules": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[concat(parameters('env_id'),'ShrdVnet001')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[concat(parameters('vnet_prefix'),'.0.0/16')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[concat(parameters('env_id'),'App1Snet001')]",
+                        "properties": {
+                            "addressPrefix": "[concat(parameters('vnet_prefix'),'.0.0/24')]"
+                        }
+                    },
+                    {
+                        "name": "[concat(parameters('env_id'),'App2Snet001')]",
+                        "properties": {
+                            "addressPrefix": "[concat(parameters('vnet_prefix'),'.1.0/24')]"
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('env_id'),'ShrdVnet001', '/', parameters('env_id'),'App1Snet001')]",
+            "apiVersion": "2018-02-01",
+            "scale": null,
+            "properties": {
+                "addressPrefix": "[concat(parameters('vnet_prefix'),'.0.0/24')]",
+				"networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App1Nsg001'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('env_id'),'ShrdVnet001'))]",
+				"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App1Nsg001'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('env_id'),'ShrdVnet001', '/', parameters('env_id'),'App2Snet001')]",
+            "apiVersion": "2018-02-01",
+            "scale": null,
+            "properties": {
+                "addressPrefix": "[concat(parameters('vnet_prefix'),'.1.0/24')]",
+				"networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App2Nsg001'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('env_id'),'ShrdVnet001'))]",
+				"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App2Nsg001'))]"
+            ]
+        }
+    ]
+}
