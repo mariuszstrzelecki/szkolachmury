@@ -2,8 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-	    "env_id": {
+        "env_id": {
             "defaultValue": "CldS",
+            "type": "String"
+        },
+		"vnet_prefix": {
+            "defaultValue": "10.1",
             "type": "String"
         },
 		"admin_password": {
@@ -15,176 +19,91 @@
     },
     "variables": {},
     "resources": [
-       {
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('env_id'),'App1Vm001')]",
-            "apiVersion": "2018-06-01",
-            "location": "[resourceGroup().location]",
-            "tags": {},
-            "scale": null,
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "18.04-LTS",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "caching": "ReadWrite",
-						"name": "[toLower(concat(parameters('env_id'),'app1odsk001'))]",
-						"createOption": "FromImage",
-                        "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                        },
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "[concat(parameters('env_id'),'App1Vm001')]",
-                    "adminUsername": "[toLower(concat(parameters('env_id'),'admin'))]",
-					"adminPassword": "[parameters('admin_password')]",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('env_id'),'App1Nic1001'))]"
-                        }
-                    ]
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('env_id'),'App1Nic1001'))]"
-            ]
-        },
-		{
-            "type": "Microsoft.Compute/virtualMachines",
-            "name": "[concat(parameters('env_id'),'App2Vm001')]",
-            "apiVersion": "2018-06-01",
-            "location": "[resourceGroup().location]",
-            "tags": {},
-            "scale": null,
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "Standard_D2s_v3"
-                },
-                "storageProfile": {
-                    "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "18.04-LTS",
-                        "version": "latest"
-                    },
-                    "osDisk": {
-                        "osType": "Linux",
-                        "caching": "ReadWrite",
-						"name": "[toLower(concat(parameters('env_id'),'app2odsk001'))]",
-						"createOption": "FromImage",
-                        "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                        },
-                        "diskSizeGB": 30
-                    },
-                    "dataDisks": []
-                },
-                "osProfile": {
-                    "computerName": "[concat(parameters('env_id'),'App2Vm001')]",
-                    "adminUsername": "[toLower(concat(parameters('env_id'),'admin'))]",
-					"adminPassword": "[parameters('admin_password')]",
-                    "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
-                        "provisionVMAgent": true
-                    },
-                    "secrets": [],
-                    "allowExtensionOperations": true
-                },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('env_id'),'App2Nic1001'))]"
-                        }
-                    ]
-                }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', concat(parameters('env_id'),'App2Nic1001'))]"
-            ]
-        },
-		{
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('env_id'),'App1Nic1001')]",
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat(parameters('env_id'),'App1Nsg001')]",
             "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
-            "tags": {},
             "scale": null,
             "properties": {
-                "ipConfigurations": [
+                "securityRules": []
+            },
+            "dependsOn": []
+        },
+		{
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[concat(parameters('env_id'),'App2Nsg001')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "securityRules": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[concat(parameters('env_id'),'ShrdVnet001')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[concat(parameters('vnet_prefix'),'.0.0/16')]"
+                    ]
+                },
+                "subnets": [
                     {
-                        "name": "ipconfig1",
+                        "name": "[concat(parameters('env_id'),'App1Snet001')]",
                         "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('env_id'),'ShrdVnet001'), concat(parameters('env_id'),'App1Snet001'))]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
+                            "addressPrefix": "[concat(parameters('vnet_prefix'),'.0.0/24')]"
+                        }
+                    },
+                    {
+                        "name": "[concat(parameters('env_id'),'App2Snet001')]",
+                        "properties": {
+                            "addressPrefix": "[concat(parameters('vnet_prefix'),'.1.0/24')]"
                         }
                     }
                 ],
-                "dnsSettings": {
-                    "dnsServers": [],
-                    "appliedDnsServers": []
-                },
-                "enableAcceleratedNetworking": false,
-                "enableIPForwarding": false,
-                "primary": true
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
             },
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('env_id'),'ShrdVnet001'), concat(parameters('env_id'),'App1Snet001'))]"
-            ]
+            "dependsOn": []
         },
-		{
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('env_id'),'App2Nic1001')]",
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('env_id'),'ShrdVnet001', '/', parameters('env_id'),'App1Snet001')]",
             "apiVersion": "2018-02-01",
-            "location": "[resourceGroup().location]",
-            "tags": {},
             "scale": null,
             "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('env_id'),'ShrdVnet001'), concat(parameters('env_id'),'App2Snet001'))]"
-                            },
-                            "primary": true,
-                            "privateIPAddressVersion": "IPv4"
-                        }
-                    }
-                ],
-                "dnsSettings": {
-                    "dnsServers": [],
-                    "appliedDnsServers": []
-                },
-                "enableAcceleratedNetworking": false,
-                "enableIPForwarding": false,
-                "primary": true
+                "addressPrefix": "[concat(parameters('vnet_prefix'),'.0.0/24')]",
+				"networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App1Nsg001'))]"
+                }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('env_id'),'ShrdVnet001'), concat(parameters('env_id'),'App2Snet001'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('env_id'),'ShrdVnet001'))]",
+				"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App1Nsg001'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('env_id'),'ShrdVnet001', '/', parameters('env_id'),'App2Snet001')]",
+            "apiVersion": "2018-02-01",
+            "scale": null,
+            "properties": {
+                "addressPrefix": "[concat(parameters('vnet_prefix'),'.1.0/24')]",
+				"networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App2Nsg001'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', concat(parameters('env_id'),'ShrdVnet001'))]",
+				"[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('env_id'),'App2Nsg001'))]"
             ]
         }
     ]
+}
