@@ -10,27 +10,27 @@
          "defaultValue":"10.1",
          "type":"String"
       },
-      "vaultName": {
-            "type": "string",
-            "defaultValue": "concat(parameters('env_id'),'SharedKeyV001')",
-            "metadata": {
-                "description": "The name of the keyvault that contains the secret."
-            }
+      "vaultName":{  
+         "type":"string",
+         "defaultValue":"concat(parameters('env_id'),'SharedKeyV001')",
+         "metadata":{  
+            "description":"The name of the keyvault that contains the secret."
+         }
       },
-      "vaultSecretName": {
-            "type": "string",
-            "defaultValue": "AdminPassword",
-            "metadata": {
-                "description": "The name of the secret."
-            }
-        },
-      "vaultResourceGroupName": {
-            "type": "string",
-            "defaultValue": "[resourceGroup().name]",
-            "metadata": {
-                "description": "The name of the resource group that contains the keyvault."
-            }
-        }
+      "vaultSecretName":{  
+         "type":"string",
+         "defaultValue":"AdminPassword",
+         "metadata":{  
+            "description":"The name of the secret."
+         }
+      },
+      "vaultResourceGroupName":{  
+         "type":"string",
+         "defaultValue":"[resourceGroup().name]",
+         "metadata":{  
+            "description":"The name of the resource group that contains the keyvault."
+         }
+      }
    },
    "variables":{  
 
@@ -71,18 +71,18 @@
                   "value":"[parameters('env_id')]"
                },
                "admin_password":{  
-                  "reference": {
-                        "keyVault": {
-                                "id": "[resourceId(subscription().subscriptionId, parameters('vaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('vaultName'))]"
-                            },
-                            "secretName": "[parameters('vaultSecretName')]"
-                        }
+                  "reference":{  
+                     "keyVault":{  
+                        "id":"[resourceId(subscription().subscriptionId, parameters('vaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('vaultName'))]"
+                     },
+                     "secretName":"[parameters('vaultSecretName')]"
+                  }
                }
             }
          },
          "dependsOn":[  
-               "linkedTemplateNetworks"
-            ]
+            "linkedTemplateNetworks"
+         ]
       }
    ]
 }
