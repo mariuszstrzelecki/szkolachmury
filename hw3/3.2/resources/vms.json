@@ -2,12 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-	    "env_id": {
+	 "env_id": {
             "defaultValue": "CldS",
             "type": "String"
         },
-		"admin_password": {
-        "type": "securestring",
+	"admin_password": {
+        "type": "String",
         "metadata": {
             "description": "Password for OS admin user"
 			}
