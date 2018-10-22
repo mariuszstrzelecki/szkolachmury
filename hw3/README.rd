@@ -35,6 +35,7 @@ ARM Template znajduje się pod adresem: https://github.com/mariuszstrzelecki/szk
 Przykładowy deployment można wykonać następująco:
 - Zamienić wartości zmiennych w poniższym skrypcie na odpowiednie dla swojej subskrypcji i potrzeb.
 - Wykonać dostosowaną sekwencję poleceń w Azure CLI(zostaniemy poproszeni o hasło administratora dla maszyn wirtualnych):
+
 #ZMIENNE
 #Opcjonalne do podmiany - wartości domyślne
 ENV_ID=CldS
@@ -61,3 +62,28 @@ az login
 az role definition create --role-definition doctor_restart_rbac.json
 
 3.4
+ARM Template znajduje się pod adresem: 
+
+Przykładowy deployment można wykonać następująco:
+- Utworzyć KeyVault i zaznaczyć opcję umożliwiającą dostęp dla deploymentu template'ów (Key Vault -> Access policies -> Advanced access policies) oraz utworzyć sekret zawierający hasło administracyjne dedykowane dla OS
+- Zamienić wartości zmiennych w poniższym skrypcie na odpowiednie dla swojej subskrypcji, potrzeb i utworzonego vault oraz sekretu.
+- Wykonać dostosowaną sekwencję poleceń w Azure CLI:
+
+#ZMIENNE
+#Opcjonalne do podmiany - wartości domyślne
+ENV_ID=CldS
+ENV_VNET_PREFIX=10.0
+ENV_LOCATION=eastus
+#Pobieranie hasła administracyjnego z KeyVault
+KEYVAULT_RG=CldSShrdRg002
+KEYVAULT_NAME="CldSShrdKeyV001"
+KEYVAULT_SECRET="AdminPassword"
+
+
+#Nie ruszać! Zmienne pomocnicze
+RG="${ENV_ID}ShrdRg001"
+
+#LOGIKA
+az login
+az group create --name $RG --location $ENV_LOCATION
+az group deployment create --name "${ENV_ID}`date +%Y%m%d%H%M%S`" --resource-group $RG --template-uri https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3/3.4/all.json --parameters "env_id=$ENV_ID" "vnet_prefix=$ENV_VNET_PREFIX" "vaultName=$KEYVAULT_NAME" "vaultSecretName=$KEYVAULT_SECRET" "vaultResourceGroupName=$KEYVAULT_RG"
