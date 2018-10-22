@@ -47,7 +47,7 @@ RG="${ENV_ID}ShrdRg001"
 #LOGIKA
 az login
 az group create --name $RG --location $ENV_LOCATION
-az group deployment create --name "${ENV_ID}`date +%Y%m%d%H%M`" --resource-group $RG --template-uri https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3//3.2/all.json --parameters env_id=$ENV_ID vnet_prefix=$ENV_VNET_PREFIX 
+az group deployment create --name "${ENV_ID}`date +%Y%m%d%H%M%S`" --resource-group $RG --template-uri https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3//3.2/all.json --parameters env_id=$ENV_ID vnet_prefix=$ENV_VNET_PREFIX 
 
 
 3.3 
