@@ -151,7 +151,6 @@
                 "primary": true
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('env_id'),'ShrdVnet001'), concat(parameters('env_id'),'App1Snet001'))]"
             ]
         },
 		{
@@ -184,7 +183,6 @@
                 "primary": true
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(parameters('env_id'),'ShrdVnet001'), concat(parameters('env_id'),'App2Snet001'))]"
             ]
         }
     ]
