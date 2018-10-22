@@ -1,56 +1,68 @@
-{
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-	    "env_id": {
-            "defaultValue": "CldS",
-            "type": "String"
-        },
-		"vnet_prefix": {
-            "defaultValue": "10.1",
-            "type": "String"
-        },
-		"admin_password": {
-        "type": "securestring",
-        "metadata": {
-            "description": "Password for OS admin user"
-			}
-		}
-    },
-    "variables": {},
-    "resources": [
-		{
-		"apiVersion": "2018-02-01",
-		"name": "linkedTemplateNetworks",
-		"type": "Microsoft.Resources/deployments",
-		"properties": {
-		"mode": "Incremental",
-		"templateLink": {
-          "uri":"https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3/3.2/resources/networks.json",
-          "contentVersion":"1.0.0.0"
-		},
-		"parameters": {
-		  "env_id": {"value": "[parameters('env_id')]"},
-		  "vnet_prefix": {"value": "[parameters('vnet_prefix')]"}
-		  }
-		   
-		}
-		},
-		{
-		"apiVersion": "2018-02-01",
-		"name": "linkedTemplateVms",
-		"type": "Microsoft.Resources/deployments",
-		"properties": {
-		"mode": "Incremental",
-		"templateLink": {
-          "uri":"https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3/3.2/resources/vms.json",
-          "contentVersion":"1.0.0.0"
-		},
-		"parameters": {
-          "env_id": {"value": "[parameters('env_id')]"},
-		  "admin_password": {"value": "[parameters('admin_password')]"}
-		}
-		}
-		}
-    ]
+{  
+   "$schema":"https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+   "contentVersion":"1.0.0.0",
+   "parameters":{  
+      "env_id":{  
+         "defaultValue":"CldS",
+         "type":"String"
+      },
+      "vnet_prefix":{  
+         "defaultValue":"10.1",
+         "type":"String"
+      },
+      "admin_password":{  
+         "type":"securestring",
+         "metadata":{  
+            "description":"Password for OS admin user"
+         }
+      }
+   },
+   "variables":{  
+
+   },
+   "resources":[  
+      {  
+         "apiVersion":"2018-02-01",
+         "name":"linkedTemplateNetworks",
+         "type":"Microsoft.Resources/deployments",
+         "properties":{  
+            "mode":"Incremental",
+            "templateLink":{  
+               "uri":"https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3/3.2/resources/networks.json",
+               "contentVersion":"1.0.0.0"
+            },
+            "parameters":{  
+               "env_id":{  
+                  "value":"[parameters('env_id')]"
+               },
+               "vnet_prefix":{  
+                  "value":"[parameters('vnet_prefix')]"
+               }
+            }
+         }
+      },
+      {  
+         "apiVersion":"2018-02-01",
+         "name":"linkedTemplateVms",
+         "type":"Microsoft.Resources/deployments",
+         "properties":{  
+            "mode":"Incremental",
+            "templateLink":{  
+               "uri":"https://raw.githubusercontent.com/mariuszstrzelecki/szkolachmury/master/hw3/3.2/resources/vms.json",
+               "contentVersion":"1.0.0.0"
+            },
+            "parameters":{  
+               "env_id":{  
+                  "value":"[parameters('env_id')]"
+               },
+               "admin_password":{  
+                  "value":"[parameters('admin_password')]"
+               }
+            },
+            "dependsOn":[  
+               "linkedTemplateNetworks"
+            ]
+         }
+      }
+   ]
 }
